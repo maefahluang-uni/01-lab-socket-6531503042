@@ -3,6 +3,8 @@ package th.mfu;
 import java.io.*;
 import java.net.*;
 
+import javax.sound.sampled.Port;
+
 public class MockWebServer implements Runnable {
 
     private int port;
@@ -15,24 +17,33 @@ public class MockWebServer implements Runnable {
     public void run() {
 
         // TODO Create a server socket bound to specified port
+        try (
+                ServerSocket ServerSocket = new ServerSocket(port)) {
+            System.out.println("Server is runnning on " + port);
 
         System.out.println("Mock Web Server running on port " + port + "...");
 
         while (true) {
-            // TODO Accept incoming client connections
+            Socket serverSocket = ServerSocket.accept();
 
-            // TODO Create input and output streams for the client socket
+            BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+            PrintWriter out = new PrintWriter(serverSocket.getOutputStream(), true);
 
-            // TODO: Read the request from the client using BufferedReader
+            String request = in.readLine();
 
-            // TODO: send a response to the client
+
+            // Response HTTP to Header HTML
             String response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"
                     + "<html><body>Hello, Web! on Port " + port + "</body></html>";
+            out.println(response);
 
             // TODO: Close the client socket
-
+            serverSocket.close();
         }
 
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     }
 
     public static void main(String[] args) {
