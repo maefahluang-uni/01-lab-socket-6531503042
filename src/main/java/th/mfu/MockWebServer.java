@@ -3,8 +3,6 @@ package th.mfu;
 import java.io.*;
 import java.net.*;
 
-import javax.sound.sampled.Port;
-
 public class MockWebServer implements Runnable {
 
     private int port;
